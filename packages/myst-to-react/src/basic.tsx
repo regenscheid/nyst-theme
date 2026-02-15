@@ -304,8 +304,9 @@ const BASIC_RENDERERS: BasicNodeRenderers = {
   },
   table({ node, className }) {
     // TODO: actually render the tbody on the server if it isn't included here.
+    const style = node.width ? { ...node.style, width: node.width } : node.style;
     return (
-      <table className={classNames(node.class, className)} style={node.style}>
+      <table className={classNames(node.class, className)} style={style}>
         <tbody>
           <MyST ast={node.children} />
         </tbody>
@@ -330,14 +331,15 @@ const BASIC_RENDERERS: BasicNodeRenderers = {
       'text-right': node.align === 'right',
       'text-center': node.align === 'center',
     };
+  const style = node.width ? { ...node.style, width: `${node.width}%` } : node.style;
     if (node.header)
       return (
-        <th className={classNames(node.class, align, className)} style={node.style} {...attrs}>
+      <th className={classNames(node.class, align, className)} style={style} {...attrs}>
           <MyST ast={node.children} />
         </th>
       );
     return (
-      <td className={classNames(node.class, align, className)} style={node.style} {...attrs}>
+    <td className={classNames(node.class, align, className)} style={style} {...attrs}>
         <MyST ast={node.children} />
       </td>
     );
