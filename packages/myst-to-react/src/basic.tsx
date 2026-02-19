@@ -74,6 +74,10 @@ type Glossary = {
   type: 'glossary';
 };
 
+type AbbreviationList = {
+  type: 'abbreviationList';
+};
+
 type Root = {
   type: 'root';
 };
@@ -119,6 +123,7 @@ type BasicNodeRenderers = {
   definitionDescription: NodeRenderer<DefinitionDescription>;
   include: NodeRenderer<Include>;
   glossary: NodeRenderer<Glossary>;
+  abbreviationList: NodeRenderer<AbbreviationList>;
   root: NodeRenderer<Root>;
 };
 
@@ -453,6 +458,16 @@ const BASIC_RENDERERS: BasicNodeRenderers = {
   },
   glossary({ node, className }) {
     // TODO, provider could give context about the filename
+    return (
+      <div
+        id={node.html_id || node.identifier || node.key}
+        className={classNames(node.class, className)}
+      >
+        <MyST ast={node.children} />
+      </div>
+    );
+  },
+  abbreviationList({ node, className }) {
     return (
       <div
         id={node.html_id || node.identifier || node.key}
