@@ -29,6 +29,10 @@
 }
 
 @layer base {
+  /* Use fixed table layout when column widths are explicitly specified via :widths: */
+  .prose table.col-widths {
+    table-layout: fixed;
+  }
   .prose table td,
   .prose table th {
     @apply p-1 align-top sm:p-2;

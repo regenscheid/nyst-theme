@@ -12,6 +12,26 @@ type TableExts = {
   colspan?: number;
 };
 
+/**
+ * Normalize a width value for use as a CSS property:
+ * - Strips surrounding quote characters, e.g. '"70%"' → '70%'
+ * - Appends '%' to bare numbers, e.g. '70' → '70%' or 70 → '70%'
+ */
+function normalizeWidth(value: string | number): string {
+  if (typeof value === 'number') return `${value}%`;
+  // Strip surrounding quotes
+  let v = value;
+  if (
+    v.length >= 2 &&
+    ((v[0] === '"' && v[v.length - 1] === '"') || (v[0] === "'" && v[v.length - 1] === "'"))
+  ) {
+    v = v.slice(1, -1);
+  }
+  // If the result is a plain number (no unit), treat as percentage
+  if (/^\d+\.?\d*$/.test(v)) return `${v}%`;
+  return v;
+}
+
 type Delete = {
   type: 'delete';
 };
@@ -250,6 +270,8 @@ const BASIC_RENDERERS: BasicNodeRenderers = {
   },
   container({ node, className }) {
     const figureName = `fig-${node.kind}`;
+    const width = node.width ? normalizeWidth(node.width) : undefined;
+    const style = width ? { ...node.style, width } : node.style;
     return (
       <figure
         id={node.html_id || node.identifier || node.key}
@@ -258,6 +280,7 @@ const BASIC_RENDERERS: BasicNodeRenderers = {
           node.class,
           className,
         )}
+        style={style}
       >
         <MyST ast={node.children} />
       </figure>
@@ -304,9 +327,18 @@ const BASIC_RENDERERS: BasicNodeRenderers = {
   },
   table({ node, className }) {
     // TODO: actually render the tbody on the server if it isn't included here.
-    const style = node.width ? { ...node.style, width: node.width } : node.style;
+    // Add 'col-widths' class when cells have explicit widths (from :widths: directive),
+    // so CSS can set table-layout: fixed to enforce them. Using a class rather than an
+    // inline style allows downstream CSS to override the behavior.
+    const firstRow = node.children?.[0] as GenericNode | undefined;
+    const hasColumnWidths = firstRow?.children?.some((cell: GenericNode) => cell.width != null);
+    const tableWidth = node.width ? normalizeWidth(node.width) : undefined;
+    const style = tableWidth ? { ...node.style, width: tableWidth } : node.style;
     return (
-      <table className={classNames(node.class, className)} style={style}>
+      <table
+        className={classNames(node.class, { 'col-widths': hasColumnWidths }, className)}
+        style={style}
+      >
         <tbody>
           <MyST ast={node.children} />
         </tbody>
@@ -331,15 +363,16 @@ const BASIC_RENDERERS: BasicNodeRenderers = {
       'text-right': node.align === 'right',
       'text-center': node.align === 'center',
     };
-  const style = node.width ? { ...node.style, width: `${node.width}%` } : node.style;
+    const widthValue = node.width != null ? normalizeWidth(node.width) : undefined;
+    const style = widthValue ? { ...node.style, width: widthValue } : node.style;
     if (node.header)
       return (
-      <th className={classNames(node.class, align, className)} style={style} {...attrs}>
+        <th className={classNames(node.class, align, className)} style={style} {...attrs}>
           <MyST ast={node.children} />
         </th>
       );
     return (
-    <td className={classNames(node.class, align, className)} style={style} {...attrs}>
+      <td className={classNames(node.class, align, className)} style={style} {...attrs}>
         <MyST ast={node.children} />
       </td>
     );
