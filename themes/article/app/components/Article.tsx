@@ -83,7 +83,7 @@ export function Article({
                 className="relative pt-[2px]"
                 maxdepth={outlineMaxDepth}
                 isMargin={isOutlineMargin}
-                title="In this article"
+                title="In this publication"
               >
                 <SupportingDocuments />
               </DocumentOutline>
