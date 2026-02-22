@@ -17,7 +17,7 @@ import {
 } from '@myst-theme/site';
 import type { SiteManifest } from 'myst-config';
 import type { PageLoader } from '@myst-theme/common';
-import { copyNode, type GenericParent } from 'myst-common';
+import { copyNode, type GenericParent, type GenericNode } from 'myst-common';
 import { SourceFileKind } from 'myst-spec-ext';
 import {
   ExecuteScopeProvider,
@@ -50,6 +50,14 @@ function combineDownloads(
 }
 
 const TOP_OFFSET = 33;
+
+function hasBibliographyNode(node: GenericNode): boolean {
+  if (node.type === 'bibliography') return true;
+  if (node.children) {
+    return node.children.some((child: GenericNode) => hasBibliographyNode(child));
+  }
+  return false;
+}
 
 export const ArticlePage = React.memo(function ({
   article,
@@ -120,7 +128,7 @@ export const ArticlePage = React.memo(function ({
           <MyST ast={tree} />
           <BackmatterParts parts={parts} />
           <Footnotes />
-          <Bibliography />
+          {!hasBibliographyNode(article.mdast) && <Bibliography />}
           <ConnectionStatusTray />
           {!hide_footer_links && !hide_all_footer_links && (
             <FooterLinksBlock links={article.footer} />

@@ -24,12 +24,20 @@ import {
   useMediaQuery,
   useProjectManifest,
 } from '@myst-theme/providers';
-import type { GenericParent } from 'myst-common';
+import type { GenericParent, GenericNode } from 'myst-common';
 import { copyNode } from 'myst-common';
 import { SourceFileKind } from 'myst-spec-ext';
 import { MyST } from 'myst-to-react';
 
 const TOP_OFFSET = 24;
+
+function hasBibliographyNode(node: GenericNode): boolean {
+  if (node.type === 'bibliography') return true;
+  if (node.children) {
+    return node.children.some((child: GenericNode) => hasBibliographyNode(child));
+  }
+  return false;
+}
 
 export function Article({
   article,
@@ -99,7 +107,7 @@ export function Article({
           <MyST ast={tree} />
           <BackmatterParts parts={parts} />
           <Footnotes />
-          <Bibliography />
+          {!hasBibliographyNode(article.mdast) && <Bibliography />}
           <ConnectionStatusTray />
         </ExecuteScopeProvider>
       </BusyScopeProvider>
