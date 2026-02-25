@@ -17,16 +17,18 @@ type TableExts = {
  * - Strips surrounding quote characters, e.g. '"70%"' → '70%'
  * - Appends '%' to bare numbers, e.g. '70' → '70%' or 70 → '70%'
  */
-function normalizeWidth(value: string | number): string {
+function normalizeWidth(value: string | number): string | undefined {
   if (typeof value === 'number') return `${value}%`;
   // Strip surrounding quotes
-  let v = value;
+  let v = value.trim();
+  if (!v) return undefined;
   if (
     v.length >= 2 &&
     ((v[0] === '"' && v[v.length - 1] === '"') || (v[0] === "'" && v[v.length - 1] === "'"))
   ) {
-    v = v.slice(1, -1);
+    v = v.slice(1, -1).trim();
   }
+  if (!v) return undefined;
   // If the result is a plain number (no unit), treat as percentage
   if (/^\d+\.?\d*$/.test(v)) return `${v}%`;
   return v;
@@ -336,7 +338,9 @@ const BASIC_RENDERERS: BasicNodeRenderers = {
     // so CSS can set table-layout: fixed to enforce them. Using a class rather than an
     // inline style allows downstream CSS to override the behavior.
     const firstRow = node.children?.[0] as GenericNode | undefined;
-    const hasColumnWidths = firstRow?.children?.some((cell: GenericNode) => cell.width != null);
+    const hasColumnWidths = firstRow?.children?.some(
+      (cell: GenericNode) => cell.width != null && cell.width !== '' && cell.width !== 0,
+    );
     const tableWidth = node.width ? normalizeWidth(node.width) : undefined;
     const style = tableWidth ? { ...node.style, width: tableWidth } : node.style;
     return (

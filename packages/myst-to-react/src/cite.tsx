@@ -106,8 +106,7 @@ export const BibliographyRenderer: NodeRenderer = ({ node, className }) => {
   const [hidden, setHidden] = useState(true);
   const hideLongBibliography = DEFAULT_HIDE_LONG_BIBLIOGRAPHY;
   if (!filtered || !data || filtered.length === 0) return null;
-  const refs =
-    hidden && hideLongBibliography ? filtered.slice(0, hideLongBibliography) : filtered;
+  const refs = hidden && hideLongBibliography ? filtered.slice(0, hideLongBibliography) : filtered;
   return (
     <div className={classNames('myst-bibliography', className, node.class)}>
       {!!hideLongBibliography && filtered.length > hideLongBibliography && (
