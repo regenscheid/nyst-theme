@@ -1,5 +1,23 @@
 # @myst-theme/article
 
+## 1.1.3
+
+### Patch Changes
+
+- 73cb335: Fork customizations for nyst-theme:
+  - myst-to-react: Add normalizeWidth utility for container/table widths, add abbreviationList node type, apply explicit column widths and table widths, add BibliographyRenderer component
+  - styles: Add col-widths CSS class for fixed table layout when column widths are specified
+  - article theme: Add hasBibliographyNode check to avoid duplicate bibliographies, rename outline title to "In this publication"
+  - book theme: Add hasBibliographyNode check to avoid duplicate bibliographies
+  - Build/deploy: Update deployment targets, CI, and metadata for regenscheid/nyst-theme fork
+- Updated dependencies [73cb335]
+  - @myst-theme/styles@1.1.3
+  - @myst-theme/providers@1.1.3
+  - @myst-theme/jupyter@1.1.3
+  - @myst-theme/site@1.1.3
+  - @myst-theme/common@1.1.3
+  - @myst-theme/icons@1.1.3
+
 ## 1.1.2
 
 ### Patch Changes
