@@ -7,7 +7,7 @@ project:
   # description:
   # keywords: []
   # authors: []
-  github: https://github.com/jupyter-book/myst-theme
+  github: https://github.com/regenscheid/nyst-theme
   jupyter: true
   parts:
     banner: |

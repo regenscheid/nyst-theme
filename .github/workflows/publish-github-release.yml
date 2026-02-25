@@ -9,7 +9,7 @@ on:
   workflow_dispatch:
     inputs:
       tag_name:
-        description: 'Tag name for the release (e.g. myst-to-react@1.2.3)'
+        description: 'Tag name for the release (e.g. nyst-theme@1.2.3)'
         required: true
         type: string
 
