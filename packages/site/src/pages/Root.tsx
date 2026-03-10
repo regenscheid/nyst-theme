@@ -95,6 +95,30 @@ export function Document({
   );
 }
 
+function toArray(val: string | string[] | undefined): string[] {
+  if (!val) return [];
+  return Array.isArray(val) ? val : [val];
+}
+
+function HeadInjections({
+  inject_style,
+  inject_script,
+}: {
+  inject_style?: string | string[];
+  inject_script?: string | string[];
+}) {
+  return (
+    <>
+      {toArray(inject_style).map((href) => (
+        <link key={href} rel="stylesheet" href={href} />
+      ))}
+      {toArray(inject_script).map((src) => (
+        <script key={src} src={src} type="text/javascript" defer />
+      ))}
+    </>
+  );
+}
+
 export function DocumentWithoutProviders({
   children,
   scripts,
@@ -139,6 +163,10 @@ export function DocumentWithoutProviders({
         <Analytics
           analytics_google={config?.options?.analytics_google}
           analytics_plausible={config?.options?.analytics_plausible}
+        />
+        <HeadInjections
+          inject_style={config?.options?.inject_style}
+          inject_script={config?.options?.inject_script}
         />
         {head}
       </head>
