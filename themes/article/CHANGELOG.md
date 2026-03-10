@@ -1,5 +1,28 @@
 # @myst-theme/article
 
+## 1.1.4
+
+### Patch Changes
+
+- d7ce546: Fork customizations for nyst-theme:
+  - myst-to-react: Add normalizeWidth utility for container/table widths, add abbreviationList node type, apply explicit column widths and table widths, add BibliographyRenderer component
+  - styles: Add col-widths CSS class for fixed table layout when column widths are specified
+  - article theme: Add hasBibliographyNode check to avoid duplicate bibliographies, rename outline title to "In this publication"
+  - book theme: Add hasBibliographyNode check to avoid duplicate bibliographies
+  - Build/deploy: Update deployment targets, CI, and metadata for regenscheid/nyst-theme fork
+- 83ea963: Add NIST header/footer integration:
+  - site: Add HeadInjections component to DocumentWithoutProviders; new inject_style and inject_script config options inject <link> and <script defer> tags into the page head, accepting a single URL or YAML list
+  - book theme: Add inject_style and inject_script template options; add nist.css (black nav + NIST blue footer overrides) and NIST logo SVGs to public/
+  - article theme: Same inject_style/inject_script options and public/ assets
+- Updated dependencies [d7ce546]
+- Updated dependencies [83ea963]
+  - @myst-theme/styles@1.1.4
+  - @myst-theme/site@1.1.4
+  - @myst-theme/providers@1.1.4
+  - @myst-theme/jupyter@1.1.4
+  - @myst-theme/common@1.1.4
+  - @myst-theme/icons@1.1.4
+
 ## 1.1.3
 
 ### Patch Changes
