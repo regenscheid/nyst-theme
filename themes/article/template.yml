@@ -67,6 +67,12 @@ options:
   - type: file
     id: style
     description: Local path to a CSS file
+  - type: string
+    id: inject_style
+    description: URL(s) of CSS stylesheets to inject into the page head. Use external URLs (https://...) or absolute paths for files served from public/ (e.g. /my-style.css). Accepts a single value or a YAML list.
+  - type: string
+    id: inject_script
+    description: URL(s) of JavaScript files to inject into the page head (loaded with defer). Use external URLs (https://...) or absolute paths for files served from public/ (e.g. /my-script.js). Accepts a single value or a YAML list.
 build:
   install: npm ci --ignore-scripts
   start: npm run start

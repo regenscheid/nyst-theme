@@ -1,0 +1,85 @@
+/* ============================================================
+   NIST TopNav: force black background (override Tailwind)
+   ============================================================ */
+.myst-top-nav {
+  background-color: #000 !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+  box-shadow: none !important;
+}
+
+.myst-top-nav,
+.myst-top-nav a,
+.myst-top-nav button,
+.myst-top-nav .myst-top-nav-item a {
+  color: #fff !important;
+}
+
+/* Logo image: no white bg needed on black nav */
+.myst-home-link-logo {
+  background: transparent !important;
+  border-radius: 0 !important;
+  padding: 0 !important;
+}
+
+/* ============================================================
+   NIST Footer: dark blue background to match NIST branding
+   ============================================================ */
+.article.footer {
+  background-color: #003366 !important;
+  color: #fff !important;
+  border-top: 5px solid #c8a400 !important; /* NIST gold accent */
+  box-shadow: none !important;
+}
+
+.article.footer a {
+  color: #fff !important;
+  text-decoration: none;
+}
+
+.article.footer a:hover {
+  text-decoration: underline;
+}
+
+/* Footer inner layout */
+.nist-footer-inner {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 2rem;
+  align-items: flex-start;
+  padding: 1rem 0;
+}
+
+.nist-footer-logo img {
+  height: 60px;
+  width: auto;
+}
+
+/* Two-column link list */
+.nist-footer-links ul {
+  column-count: 2;
+  column-gap: 2rem;
+  list-style: none !important;
+  padding: 0 !important;
+  margin: 0 !important;
+}
+
+.nist-footer-links li {
+  font-size: 0.8rem;
+  margin-bottom: 0.3rem;
+  break-inside: avoid;
+}
+
+/* Social media row */
+.nist-footer-social {
+  font-size: 0.9rem;
+  display: flex;
+  gap: 1rem;
+  flex-wrap: wrap;
+  align-items: center;
+}
+
+.nist-footer-social a {
+  font-size: 1.25rem !important; /* FontAwesome icon size */
+  color: #fff !important;
+}
