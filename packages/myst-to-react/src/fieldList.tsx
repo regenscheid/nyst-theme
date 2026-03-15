@@ -10,7 +10,7 @@ type FieldList = {
 
 type Field = {
   type: 'field';
-  field_name: string;
+  field_name: GenericNode[];
 };
 
 export const FieldListRenderer: NodeRenderer<FieldList> = ({ node }) => {
@@ -21,7 +21,7 @@ export const FieldListRenderer: NodeRenderer<FieldList> = ({ node }) => {
       <div className="field-list-grid">
         {fields.map((field, i) => (
           <React.Fragment key={i}>
-            <div className="field-list-label">{field.field_name}</div>
+            <div className="field-list-label"><MyST ast={field.field_name} /></div>
             <div className="field-list-value">
               <MyST ast={field.children} />
             </div>
