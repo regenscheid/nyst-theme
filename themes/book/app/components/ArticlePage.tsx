@@ -75,7 +75,15 @@ export const ArticlePage = React.memo(function ({
   const pageDesign: TemplateOptions = (article.frontmatter as any)?.site ?? {};
   const siteDesign: TemplateOptions =
     (useSiteManifest() as SiteManifest & TemplateOptions)?.options ?? {};
-  const { hide_title_block, hide_footer_links, hide_outline, outline_maxdepth, hide_authors } = {
+  const {
+    hide_title_block,
+    hide_footer_links,
+    hide_outline,
+    outline_maxdepth,
+    outline_collapse_depth,
+    outline_collapsed,
+    hide_authors,
+  } = {
     ...siteDesign,
     ...pageDesign,
   };
@@ -113,6 +121,8 @@ export const ArticlePage = React.memo(function ({
               <DocumentOutline
                 className="relative mt-9"
                 maxdepth={outline_maxdepth}
+                collapseDepth={outline_collapse_depth}
+                defaultOpen={outline_collapsed ? false : undefined}
                 isMargin={isOutlineMargin}
               />
             </div>

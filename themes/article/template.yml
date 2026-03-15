@@ -31,6 +31,15 @@ options:
     min: 1
     max: 6
     integer: true
+  - type: number
+    id: outline_collapse_depth
+    description: Deepest heading level shown expanded by default in the document outline. Headings deeper than this level that have sub-headings will start collapsed. Defaults to fully expanded.
+    min: 1
+    max: 6
+    integer: true
+  - type: boolean
+    id: outline_collapsed
+    description: Start the document outline in the collapsed state. The Contents header remains visible and clickable to expand.
   - type: string
     id: twitter
     description: Twitter handle related to the site
