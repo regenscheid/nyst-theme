@@ -46,6 +46,8 @@ export function Article({
   hideTitle,
   hideAuthors,
   outlineMaxDepth,
+  outlineCollapseDepth,
+  outlineCollapsed,
 }: {
   article: PageLoader;
   hideKeywords?: boolean;
@@ -53,6 +55,8 @@ export function Article({
   hideTitle?: boolean;
   hideAuthors?: boolean;
   outlineMaxDepth?: number;
+  outlineCollapseDepth?: number;
+  outlineCollapsed?: boolean;
 }) {
   const manifest = useProjectManifest();
   const keywords = article.frontmatter?.keywords ?? [];
@@ -90,6 +94,8 @@ export function Article({
               <DocumentOutline
                 className="relative pt-[2px]"
                 maxdepth={outlineMaxDepth}
+                collapseDepth={outlineCollapseDepth}
+                defaultOpen={outlineCollapsed ? false : undefined}
                 isMargin={isOutlineMargin}
                 title="In this publication"
               >

@@ -42,56 +42,121 @@ export type Heading = {
   level: number;
 };
 
-type Props = {
-  headings: Heading[];
-  activeId?: string;
-};
-/**
- * This renders an item in the table of contents list.
- * scrollIntoView is used to ensure that when a user clicks on an item, it will smoothly scroll.
- */
-const Headings = ({ headings, activeId }: Props) => (
-  <ul className="myst-outline-list text-sm leading-6 text-slate-400">
-    {headings.map((heading) => (
-      <li
-        key={heading.id}
-        className={classNames('myst-outline-item border-l-2 hover:border-l-blue-500', {
-          'text-blue-600': heading.id === activeId,
-          'border-l-gray-300 dark:border-l-gray-50': heading.id !== activeId,
-          'border-l-blue-500': heading.id === activeId,
-          'bg-blue-50 dark:bg-slate-800': heading.id === activeId,
-          'myst-outline-item-active': heading.id === activeId,
-        })}
-      >
-        <a
-          className={classNames('block p-1', {
-            'text-slate-900 dark:text-slate-50': heading.level < 2 && heading.id !== activeId,
-            'text-slate-500 dark:text-slate-300': heading.level >= 2 && heading.id !== activeId,
-            'text-blue-600 dark:text-white font-bold': heading.id === activeId,
-            'pr-2': heading.id !== activeId, // Allows for bold to change length
-            'pl-2': heading.level === 1,
-            'pl-4': heading.level === 2,
-            'pl-8 text-xs': heading.level === 3,
-            'pl-10 text-xs font-light': heading.level === 4,
-            'pl-12 text-xs font-extralight': heading.level === 5,
-          })}
-          href={`#${heading.id}`}
-          onClick={(e) => {
-            e.preventDefault();
-            const el = document.querySelector(`#${heading.id}`) as HTMLElement | undefined;
-            if (!el) return;
+type HeadingNode = Heading & { children: HeadingNode[] };
 
-            el.scrollIntoView({ behavior: 'smooth' });
-            history.replaceState(undefined, '', `#${heading.id}`);
-            // Changes keyboard tab-index location
-            if (el.tabIndex === -1) el.tabIndex = -1;
-            el.focus({ preventScroll: true });
-          }}
-          // Note that the title can have math in it!
-          dangerouslySetInnerHTML={{ __html: heading.titleHTML }}
-        />
-      </li>
-    ))}
+function buildTree(headings: Heading[]): HeadingNode[] {
+  const root: HeadingNode[] = [];
+  const stack: HeadingNode[] = [];
+  for (const h of headings) {
+    const node: HeadingNode = { ...h, children: [] };
+    while (stack.length > 0 && stack[stack.length - 1].level >= h.level) {
+      stack.pop();
+    }
+    if (stack.length === 0) root.push(node);
+    else stack[stack.length - 1].children.push(node);
+    stack.push(node);
+  }
+  return root;
+}
+
+type TreeProps = {
+  nodes: HeadingNode[];
+  activeId?: string;
+  collapsedIds: Set<string>;
+  onToggle: (id: string) => void;
+  nested?: boolean;
+};
+
+/**
+ * Recursively renders the document outline as a collapsible tree.
+ * Headings with children show an inline chevron toggle.
+ */
+const HeadingTree = ({ nodes, activeId, collapsedIds, onToggle, nested }: TreeProps) => (
+  <ul className={classNames('myst-outline-list text-sm leading-6 text-slate-400', { '-ml-[2px]': nested })}>
+    {nodes.map((node) => {
+      const hasChildren = node.children.length > 0;
+      const isCollapsed = collapsedIds.has(node.id);
+      const isActive = node.id === activeId;
+      const chevronLeft = {
+        'left-0': node.level === 1,
+        'left-3': node.level === 2,
+        'left-6': node.level === 3,
+        'left-9': node.level === 4,
+        'left-12': node.level === 5,
+      };
+      const textIndent = {
+        'pl-3': node.level === 1,
+        'pl-6': node.level === 2,
+        'pl-9': node.level === 3,
+        'pl-12': node.level === 4,
+        'pl-[3.75rem]': node.level === 5,
+      };
+      return (
+        <li
+          key={node.id}
+          className={classNames('myst-outline-item border-l-2 hover:border-l-blue-500', {
+            'border-l-gray-300 dark:border-l-gray-50': !isActive,
+            'border-l-blue-500 bg-blue-50 dark:bg-slate-800 myst-outline-item-active': isActive,
+          })}
+        >
+          <div className="relative flex items-center">
+            {hasChildren && (
+              <button
+                onClick={() => onToggle(node.id)}
+                aria-label={isCollapsed ? 'Expand section' : 'Collapse section'}
+                className={classNames(
+                  'absolute top-0 h-full w-3 flex items-center rounded hover:bg-slate-200/50 dark:hover:bg-slate-700/50',
+                  chevronLeft,
+                )}
+              >
+                <ChevronRightIcon
+                  width="0.75rem"
+                  height="0.75rem"
+                  className={classNames('transition-transform duration-200', {
+                    'rotate-90': !isCollapsed,
+                    'text-blue-500': isActive,
+                    'text-slate-400': !isActive,
+                  })}
+                />
+              </button>
+            )}
+            <a
+              className={classNames('block p-1 flex-1', textIndent, {
+                'text-slate-900 dark:text-slate-50': node.level < 2 && !isActive,
+                'text-slate-500 dark:text-slate-300': node.level >= 2 && !isActive,
+                'text-blue-600 dark:text-white font-bold': isActive,
+                'pr-2': !isActive,
+                'text-xs': node.level >= 3,
+                'font-light': node.level === 4,
+                'font-extralight': node.level === 5,
+              })}
+              href={`#${node.id}`}
+              onClick={(e) => {
+                e.preventDefault();
+                const el = document.querySelector(`#${node.id}`) as HTMLElement | undefined;
+                if (!el) return;
+                el.scrollIntoView({ behavior: 'smooth' });
+                history.replaceState(undefined, '', `#${node.id}`);
+                // Changes keyboard tab-index location
+                if (el.tabIndex === -1) el.tabIndex = -1;
+                el.focus({ preventScroll: true });
+              }}
+              // Note that the title can have math in it!
+              dangerouslySetInnerHTML={{ __html: node.titleHTML }}
+            />
+          </div>
+          {hasChildren && !isCollapsed && (
+            <HeadingTree
+              nodes={node.children}
+              activeId={activeId}
+              collapsedIds={collapsedIds}
+              onToggle={onToggle}
+              nested={true}
+            />
+          )}
+        </li>
+      );
+    })}
   </ul>
 );
 
@@ -417,6 +482,8 @@ export const DocumentOutline = ({
   selector = SELECTOR,
   children,
   maxdepth = 4,
+  collapseDepth,
+  defaultOpen = true,
   isMargin,
 }: {
   outlineRef?: React.RefObject<HTMLElement>;
@@ -427,17 +494,45 @@ export const DocumentOutline = ({
   selector?: string;
   children?: React.ReactNode;
   maxdepth?: number;
+  collapseDepth?: number;
+  defaultOpen?: boolean;
   isMargin?: boolean;
 }) => {
   const { activeId, headings } = useHeaders(selector, maxdepth);
   const [open, setOpen] = useState(false);
+
+  // Build tree and collapsed state
+  const tree = useMemo(() => buildTree(headings), [headings]);
+  const [collapsedIds, setCollapsedIds] = useState<Set<string>>(() => {
+    if (!collapseDepth) return new Set<string>();
+    const depth = collapseDepth; // capture for nested function closure
+    const collapsed = new Set<string>();
+    function collect(nodes: HeadingNode[]) {
+      for (const node of nodes) {
+        if (node.level >= depth && node.children.length > 0) {
+          collapsed.add(node.id);
+        }
+        collect(node.children);
+      }
+    }
+    collect(buildTree(headings));
+    return collapsed;
+  });
+  const toggleCollapsed = useCallback((id: string) => {
+    setCollapsedIds((prev) => {
+      const next = new Set(prev);
+      if (next.has(id)) next.delete(id);
+      else next.add(id);
+      return next;
+    });
+  }, []);
 
   // Keep track of changing occlusion
   const { occluded } = useMarginOccluder();
 
   // Handle transition between margin and non-margin
   useEffect(() => {
-    setOpen(true);
+    if (defaultOpen !== false) setOpen(true);
   }, [isMargin]);
 
   // Handle occlusion when outline is in margin
@@ -483,7 +578,12 @@ export const DocumentOutline = ({
           </Collapsible.Trigger>
         </div>
         <Collapsible.Content className="CollapsibleContent">
-          <Headings headings={headings} activeId={activeId} />
+          <HeadingTree
+            nodes={tree}
+            activeId={activeId}
+            collapsedIds={collapsedIds}
+            onToggle={toggleCollapsed}
+          />
           {children}
         </Collapsible.Content>
       </nav>

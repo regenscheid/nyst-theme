@@ -25,7 +25,7 @@ export function ArticlePage({ article }: { article: PageLoader }) {
   const siteDesign: TemplateOptions = siteManifest?.options ?? {};
 
   const { projects } = siteManifest;
-  const { hide_footer_links, hide_outline, outline_maxdepth, hide_authors } = {
+  const { hide_footer_links, hide_outline, outline_maxdepth, outline_collapse_depth, outline_collapsed, hide_authors } = {
     ...siteDesign,
     ...pageDesign,
   };
@@ -102,6 +102,8 @@ export function ArticlePage({ article }: { article: PageLoader }) {
               hideOutline={hide_outline}
               hideAuthors={hide_authors}
               outlineMaxDepth={outline_maxdepth}
+              outlineCollapseDepth={outline_collapse_depth}
+              outlineCollapsed={outline_collapsed}
             />
           </article>
           {!hide_footer_links && <FooterLinksBlock links={article.footer} />}
