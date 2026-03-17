@@ -87,6 +87,7 @@ type BasicNodeRenderers = {
   // Comment
   comment: NodeRenderer<spec.Comment>;
   mystComment: NodeRenderer<spec.Comment>;
+  mystRole: NodeRenderer<GenericNode>;
   // Our additions
   captionNumber: NodeRenderer<CaptionNumber>;
   delete: NodeRenderer<Delete>;
@@ -365,6 +366,13 @@ const BASIC_RENDERERS: BasicNodeRenderers = {
           <MyST ast={node.children} />
         </abbr>
       </Tooltip>
+    );
+  },
+  mystRole({ node, className }) {
+    return (
+      <span className={className}>
+        <MyST ast={node.children} />
+      </span>
     );
   },
   mystComment() {
