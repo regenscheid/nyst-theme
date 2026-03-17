@@ -503,9 +503,12 @@ export const DocumentOutline = ({
 
   // Build tree and collapsed state
   const tree = useMemo(() => buildTree(headings), [headings]);
-  const [collapsedIds, setCollapsedIds] = useState<Set<string>>(() => {
-    if (!collapseDepth) return new Set<string>();
-    const depth = collapseDepth; // capture for nested function closure
+  const [collapsedIds, setCollapsedIds] = useState<Set<string>>(new Set());
+  const collapsedInitialized = useRef(false);
+  useEffect(() => {
+    if (collapsedInitialized.current || !collapseDepth || headings.length === 0) return;
+    collapsedInitialized.current = true;
+    const depth = collapseDepth;
     const collapsed = new Set<string>();
     function collect(nodes: HeadingNode[]) {
       for (const node of nodes) {
@@ -516,8 +519,8 @@ export const DocumentOutline = ({
       }
     }
     collect(buildTree(headings));
-    return collapsed;
-  });
+    setCollapsedIds(collapsed);
+  }, [headings, collapseDepth]);
   const toggleCollapsed = useCallback((id: string) => {
     setCollapsedIds((prev) => {
       const next = new Set(prev);
