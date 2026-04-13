@@ -1,5 +1,12 @@
 # myst-to-react
 
+## 1.1.5
+
+### Patch Changes
+
+- bf42818: fix: create git tag automatically during GitHub release workflow
+  - @myst-theme/providers@1.1.5
+
 ## 1.1.4
 
 ### Patch Changes

@@ -1,5 +1,12 @@
 # @myst-theme/providers
 
+## 1.1.5
+
+### Patch Changes
+
+- @myst-theme/common@1.1.5
+- @myst-theme/search@1.1.5
+
 ## 1.1.4
 
 ### Patch Changes
