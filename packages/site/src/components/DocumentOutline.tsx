@@ -72,7 +72,11 @@ type TreeProps = {
  * Headings with children show an inline chevron toggle.
  */
 const HeadingTree = ({ nodes, activeId, collapsedIds, onToggle, nested }: TreeProps) => (
-  <ul className={classNames('myst-outline-list text-sm leading-6 text-slate-400', { '-ml-[2px]': nested })}>
+  <ul
+    className={classNames('myst-outline-list text-sm leading-6 text-slate-400', {
+      '-ml-[2px]': nested,
+    })}
+  >
     {nodes.map((node) => {
       const hasChildren = node.children.length > 0;
       const isCollapsed = collapsedIds.has(node.id);
