@@ -48,14 +48,25 @@ jobs:
           # Remove the title from the release notes
           tail -n +2 release-notes.md > release-notes-temp.md && mv release-notes-temp.md release-notes.md
 
-      # Create GitHub Release with gh
-      - name: Create GitHub Release with gh
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      # Create the git tag if it doesn't already exist
+      - name: Create git tag
         run: |
           TAG="${{ inputs.tag_name }}"
           if [ -z "$TAG" ]; then
             echo "Release tag was not provided to publish-github-release workflow." >&2
             exit 1
           fi
+          if git rev-parse "refs/tags/$TAG" >/dev/null 2>&1; then
+            echo "Tag $TAG already exists locally"
+          else
+            git tag "$TAG"
+            git push origin "$TAG"
+          fi
+
+      # Create GitHub Release with gh
+      - name: Create GitHub Release with gh
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          TAG="${{ inputs.tag_name }}"
           gh release create "$TAG" --title "$TAG" --notes-file release-notes.md --verify-tag
