@@ -513,10 +513,11 @@ export const DocumentOutline = ({
     if (!collapseDepth || headings.length === 0) return;
     if (prevHeadingsRef.current === headings) return;
     prevHeadingsRef.current = headings;
+    const depth = collapseDepth;
     const collapsed = new Set<string>();
     function collect(nodes: HeadingNode[]) {
       for (const node of nodes) {
-        if (node.level >= collapseDepth && node.children.length > 0) {
+        if (node.level >= depth && node.children.length > 0) {
           collapsed.add(node.id);
         }
         collect(node.children);
