@@ -508,15 +508,15 @@ export const DocumentOutline = ({
   // Build tree and collapsed state
   const tree = useMemo(() => buildTree(headings), [headings]);
   const [collapsedIds, setCollapsedIds] = useState<Set<string>>(new Set());
-  const collapsedInitialized = useRef(false);
+  const prevHeadingsRef = useRef<typeof headings | null>(null);
   useEffect(() => {
-    if (collapsedInitialized.current || !collapseDepth || headings.length === 0) return;
-    collapsedInitialized.current = true;
-    const depth = collapseDepth;
+    if (!collapseDepth || headings.length === 0) return;
+    if (prevHeadingsRef.current === headings) return;
+    prevHeadingsRef.current = headings;
     const collapsed = new Set<string>();
     function collect(nodes: HeadingNode[]) {
       for (const node of nodes) {
-        if (node.level >= depth && node.children.length > 0) {
+        if (node.level >= collapseDepth && node.children.length > 0) {
           collapsed.add(node.id);
         }
         collect(node.children);
