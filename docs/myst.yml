@@ -9,11 +9,7 @@ project:
   # description:
   # keywords: []
   # authors: []
-  github: https://github.com/jupyter-book/myst-theme
-  error_rules:
-    - rule: link-resolves
-      keys:
-        - 'https://github.com/**'
+  github: https://github.com/regenscheid/nyst-theme
   jupyter: true
   parts:
     banner: |

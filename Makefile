@@ -13,7 +13,7 @@ build-theme:
 	npm install
 	mkdir .deploy || true
 	rm -rf .deploy/$(THEME)
-	git clone --depth 1 https://github.com/myst-templates/$(THEME)-theme .deploy/$(THEME)
+	git clone --depth 1 https://github.com/regenscheid/nyst-$(THEME) .deploy/$(THEME)
 	rm -rf .deploy/$(THEME)/public .deploy/$(THEME)/build .deploy/$(THEME)/package.json .deploy/$(THEME)/package-lock.json .deploy/$(THEME)/template.yml .deploy/$(THEME)/server.js
 	find template -type f  -exec cp {} .deploy/$(THEME) \;
 	rm -rf themes/$(THEME)/{public,build}
@@ -33,7 +33,7 @@ build-book:
 	make THEME=book build-theme
 
 deploy-theme: check
-	echo "Deploying $(THEME) theme to myst-templates/$(THEME)-theme"
+	echo "Deploying $(THEME) theme to regenscheid/nyst-$(THEME)"
 	echo "Version: $(VERSION)"
 	make THEME=$(THEME) build-theme
 	cd .deploy/$(THEME) && git add .

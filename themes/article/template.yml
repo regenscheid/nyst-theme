@@ -3,7 +3,7 @@ title: Article Theme
 description: Simple site for displaying an article with associated notebooks.
 version: 1.0.0
 license: MIT
-source: https://github.com/jupyter-book/myst-theme
+source: https://github.com/regenscheid/nyst-theme
 thumbnail: ./thumbnail.png
 authors:
   - name: Rowan Cockett
@@ -31,6 +31,15 @@ options:
     min: 1
     max: 6
     integer: true
+  - type: number
+    id: outline_collapse_depth
+    description: Deepest heading level shown expanded by default in the document outline. Headings deeper than this level that have sub-headings will start collapsed. Defaults to fully expanded.
+    min: 1
+    max: 6
+    integer: true
+  - type: boolean
+    id: outline_collapsed
+    description: Start the document outline in the collapsed state. The Contents header remains visible and clickable to expand.
   - type: string
     id: twitter
     description: Twitter handle related to the site
@@ -72,6 +81,12 @@ options:
   - type: file
     id: style
     description: Local path to a CSS file
+  - type: string
+    id: inject_style
+    description: URL(s) of CSS stylesheets to inject into the page head. Use external URLs (https://...) or absolute paths for files served from public/ (e.g. /my-style.css). Accepts a single value or a YAML list.
+  - type: string
+    id: inject_script
+    description: URL(s) of JavaScript files to inject into the page head (loaded with defer). Use external URLs (https://...) or absolute paths for files served from public/ (e.g. /my-script.js). Accepts a single value or a YAML list.
 build:
   install: npm ci --ignore-scripts
   start: npm run start

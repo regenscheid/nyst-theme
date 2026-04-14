@@ -1,21 +1,24 @@
-# `myst-theme`
+# `nyst-theme`
 
-[![MIT License](https://img.shields.io/badge/license-MIT-blue.svg)](https://github.com/jupyter-book/myst-theme/blob/main/LICENSE)
-[![CI](https://github.com/jupyter-book/myst-theme/workflows/CI/badge.svg)](https://github.com/jupyter-book/myst-theme/actions)
+A fork of [`myst-theme`](https://github.com/jupyter-book/myst-theme) for use with [`nystmd`](https://github.com/regenscheid/nystmd), a fork of the [MyST Markdown CLI](https://github.com/jupyter-book/mystmd).
 
-This repository contains two things:
+This repository contains:
 
 - A **react renderer** for MyST AST and content, so you can render MyST node types as React components.
 - A **book theme and an article theme** that use this renderer along with Remix to create two different website experiences using the react components.
 
-It also serves as the reference documentation for these themes at the URL below:
+## Deployment
 
-https://myst-theme.netlify.app/
+The built themes deploy to:
 
-> **Note**: This builds against the [`main` branch of `mystmd`](https://github.com/jupyter-book/mystmd).
-> This allows us to test out new theme features against the latest version of the MyST Engine.
+- [`regenscheid/nyst-article`](https://github.com/regenscheid/nyst-article)
+- [`regenscheid/nyst-book`](https://github.com/regenscheid/nyst-book)
 
-You can also find a [storybook site for the MyST Theme components](https://jupyter-book.github.io/myst-theme/?path=/docs/components-introduction--docs) to see the style and structure of components.
+## Upstream
+
+This fork will track [`jupyter-book/myst-theme`](https://github.com/jupyter-book/myst-theme). 
+
+> **Note**: This fork does not publish to npm. The `@myst-theme/*` package names remain unchanged to minimize merge conflicts with upstream.
 
 # Development
 
@@ -34,16 +37,19 @@ See [the architecture and tools guide](./docs/developer/architecture.md).
 
 See [the documentation guide](./docs/developer/documentation.md).
 
-## Deployment to NPM
+## Releasing and deploying
 
-To update the theme components on NPM:
+To deploy the themes via GitHub Actions, add a changeset and merge to `main`:
 
 ```bash
-npm run version
-npm run publish
+npx changeset
+git add .changeset/
+git commit -m "Add changeset for release"
 ```
 
-To update the themes for use with the MyST CLI:
+The release workflow will open a version-bump PR. Merging that PR triggers deployment to `nyst-article` and `nyst-book`.
+
+To deploy manually:
 
 ```bash
 make deploy-book

@@ -90,4 +90,6 @@ export type CommonTemplateOptions = {
   hide_toc?: boolean;
   hide_outline?: boolean;
   outline_maxdepth?: number;
+  outline_collapse_depth?: number;
+  outline_collapsed?: boolean;
 };

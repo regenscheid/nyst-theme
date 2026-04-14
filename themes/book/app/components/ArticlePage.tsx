@@ -17,7 +17,7 @@ import {
 } from '@myst-theme/site';
 import type { SiteManifest } from 'myst-config';
 import type { PageLoader } from '@myst-theme/common';
-import { copyNode, type GenericParent } from 'myst-common';
+import { copyNode, type GenericParent, type GenericNode } from 'myst-common';
 import { SourceFileKind } from 'myst-spec-ext';
 import {
   ExecuteScopeProvider,
@@ -51,6 +51,14 @@ function combineDownloads(
 
 const TOP_OFFSET = 33;
 
+function hasBibliographyNode(node: GenericNode): boolean {
+  if (node.type === 'bibliography') return true;
+  if (node.children) {
+    return node.children.some((child: GenericNode) => hasBibliographyNode(child));
+  }
+  return false;
+}
+
 export const ArticlePage = React.memo(function ({
   article,
   hide_all_footer_links,
@@ -67,7 +75,15 @@ export const ArticlePage = React.memo(function ({
   const pageDesign: TemplateOptions = (article.frontmatter as any)?.site ?? {};
   const siteDesign: TemplateOptions =
     (useSiteManifest() as SiteManifest & TemplateOptions)?.options ?? {};
-  const { hide_title_block, hide_footer_links, hide_outline, outline_maxdepth, hide_authors } = {
+  const {
+    hide_title_block,
+    hide_footer_links,
+    hide_outline,
+    outline_maxdepth,
+    outline_collapse_depth,
+    outline_collapsed,
+    hide_authors,
+  } = {
     ...siteDesign,
     ...pageDesign,
   };
@@ -105,6 +121,8 @@ export const ArticlePage = React.memo(function ({
               <DocumentOutline
                 className="relative mt-9"
                 maxdepth={outline_maxdepth}
+                collapseDepth={outline_collapse_depth}
+                defaultOpen={outline_collapsed ? false : undefined}
                 isMargin={isOutlineMargin}
               />
             </div>
@@ -120,7 +138,7 @@ export const ArticlePage = React.memo(function ({
           <MyST ast={tree} />
           <BackmatterParts parts={parts} />
           <Footnotes />
-          <Bibliography />
+          {!hasBibliographyNode(article.mdast) && <Bibliography />}
           <ConnectionStatusTray />
           {!hide_footer_links && !hide_all_footer_links && (
             <FooterLinksBlock links={article.footer} />

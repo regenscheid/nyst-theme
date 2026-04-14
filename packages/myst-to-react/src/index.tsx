@@ -22,6 +22,7 @@ import INLINE_EXPRESSION_RENDERERS from './inlineExpression.js';
 import PROOF_RENDERERS from './proof.js';
 import EXERCISE_RENDERERS from './exercise.js';
 import ASIDE_RENDERERS from './aside.js';
+import FIELD_LIST_RENDERERS from './fieldList.js';
 import UNKNOWN_MYST_RENDERERS from './unknown.js';
 
 export { Block } from './block.js';
@@ -61,6 +62,7 @@ export const DEFAULT_RENDERERS = mergeRenderers(
     PROOF_RENDERERS,
     EXERCISE_RENDERERS,
     ASIDE_RENDERERS,
+    FIELD_LIST_RENDERERS,
   ],
   true,
 );
